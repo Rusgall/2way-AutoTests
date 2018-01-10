@@ -1,0 +1,7 @@
+<suite name="DBTestSuite">
+    <test name="External">
+        <classes>
+            <class name="dbtests.external.UserTests" />
+        </classes>
+    </test>
+</suite>
