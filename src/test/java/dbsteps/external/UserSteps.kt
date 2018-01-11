@@ -31,23 +31,28 @@ abstract class UserSteps : BaseSteps() {
 
     @Step("Аутентификация с ошибкой")
     fun failAuthentication(login: String, pass: String, exceptError: String) {
-        var actualError : String? = null
+        var actualError: String? = null
         try {
             ExternalQuery.authenticationUser(login, pass)
-        }catch (e: PSQLException){
+        } catch (e: PSQLException) {
             actualError = e.message
         }
         Assert.assertEquals(actualError, exceptError, "Функция вернула неправильную ошибку")
     }
 
     @Step("Блокируем пользователя")
-    fun blockUser(login: String) {
-        ExternalQuery.blockUser(login)
+    fun blockUser(login: String): Int? {
+        return ExternalQuery.blockUser(login)
     }
 
     @Step("Удаляем пользователя")
-    fun deleteUser(login: String) {
-        ExternalQuery.deleteUser(login)
+    fun deleteUser(login: String): Int? {
+        return ExternalQuery.deleteUser(login)
+    }
+
+    @Step("Меняем пароль")
+    fun changePassword(login: String, newPass: String): Int? {
+        return ExternalQuery.changePassword(login, newPass)
     }
 
 }

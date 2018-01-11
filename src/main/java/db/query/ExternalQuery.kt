@@ -46,19 +46,22 @@ object ExternalQuery {
     }
 
     @Step("Создаем пользователя")
-    fun createUser(name: String, login: String, password: String, superuser: Boolean, role: Roles?, client: Clients?, params: JsonUser?, email: String) {
+    fun createUser(name: String, login: String, password: String, superuser: Boolean, role: Roles?, client: Clients?, params: JsonUser?, email: String): Int? {
+        var id: Int? = null
         transaction {
             setSchema(public, external)
-            TransactionManager.current().exec("Select external.create_user('$name', '$login', '$password', $superuser, ${role?.id?.value}, ${client?.id?.value}, '$params', '$email');")
+            TransactionManager.current().exec("Select external.create_user('$name', '$login', '$password', $superuser, ${role?.id?.value}, ${client?.id?.value}, '$params', '$email');") { it.next(); id = it.getInt(1) }
         }
+
+        return id
     }
 
     @Step("Аутентификация пользователя")
-    fun authenticationUser(login: String, password: String) : Int? {
-        var id : Int? = null
+    fun authenticationUser(login: String, password: String): Int? {
+        var id: Int? = null
         transaction {
             setSchema(public, external)
-            TransactionManager.current().exec("SELECT external.authentication_user('$login','$password');"){it.next(); id = it.getInt(1)}
+            TransactionManager.current().exec("SELECT external.authentication_user('$login','$password');") { it.next(); id = it.getInt(1) }
         }
 
         return id
@@ -98,24 +101,36 @@ object ExternalQuery {
     }
 
     @Step("Блокируем пользователя")
-    fun blockUser(login: String): Int?{
+    fun blockUser(login: String): Int? {
         var id: Int? = null
         transaction {
             setSchema(external)
-            TransactionManager.current().exec("SELECT external.block_user('$login');"){it.next(); id = it.getInt(1)}
+            TransactionManager.current().exec("SELECT external.block_user('$login');") { it.next(); id = it.getInt(1) }
         }
 
         return id
     }
 
     @Step("Удаляем пользователя")
-    fun deleteUser(login: String): Int?{
+    fun deleteUser(login: String): Int? {
         var id: Int? = null
         transaction {
             setSchema(external)
-            TransactionManager.current().exec("SELECT external.delete_user('$login');"){it.next(); id = it.getInt(1)}
+            TransactionManager.current().exec("SELECT external.delete_user('$login');") { it.next(); id = it.getInt(1) }
         }
 
         return id
+    }
+
+    @Step("Меняем пароль")
+    fun changePassword(login: String, newPass: String): Int? {
+        var id: Int? = null
+        transaction {
+            setSchema(public, external)
+            TransactionManager.current().exec("SELECT external.change_user_password('$login', '$newPass');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
+
     }
 }

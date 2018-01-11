@@ -15,7 +15,7 @@ abstract class BaseSteps : BaseTest(){
     @Step("Создаем пользователя")
     fun createUser(name: String = "User name", login: String = adminLogin, password: String = adminPass,
                    superuser: Boolean = true, role: Roles? = adminRole, client: Clients? = adminClient,
-                   params: JsonUser? = adminUserJson, email: String = adminEmail){
+                   params: JsonUser? = adminUser?.params, email: String = adminEmail){
         ExternalQuery.createUser(name, login, password, superuser, role, client, params, email)
 
     }
