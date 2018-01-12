@@ -1,15 +1,19 @@
 package dbtests.external
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import dataprovider.ExternalProvider
 import dbtests.BaseTest
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.testng.annotations.Test
 import db.entity.external.Users
+import db.entity.external.UsersObject
 import db.query.ExternalQuery
 import dbsteps.external.UserSteps
+import entity.external.JsonUser
 import io.qameta.allure.Feature
 import io.qameta.allure.Step
 import io.qameta.allure.Story
+import org.jetbrains.exposed.dao.EntityID
 import org.testng.Assert
 import utils.adminIncorrectLogin
 import utils.adminIncorrectPass
@@ -53,7 +57,7 @@ class UserTests : UserSteps() {
 
     @Story("Блокировка")
     @Test(description = "Успешная блокировка")
-    fun blockUser(){
+    fun blockUser() {
         //Блокируем админа
         val idFromFun = blockUser(adminLogin)
 
@@ -67,7 +71,7 @@ class UserTests : UserSteps() {
 
     @Story("Смена пароля")
     @Test(description = "Успешная смена пароля")
-    fun changePassword(){
+    fun changePassword() {
         //Меняем пароль админу
         val idFromFun = changePassword(adminLogin, "password")
 
@@ -76,7 +80,29 @@ class UserTests : UserSteps() {
         val idUser = admin?.id?.value
 
         Assert.assertEquals(idFromFun, idUser, "Функция вернула другой id")
-        Assert.assertEquals(admin?.encrypted_password, "\$2a\$06\$c91qWHlcz1ZPTotob49CBOa25d9ENBo0y9Y4CtlORFpm3kzTnHAva", "Пароль не сменился")
+        Assert.assertEquals(admin?.encrypted_password, "надо подумать", "Пароль не сменился")
+    }
+
+
+    @Story("Создание пользователя")
+    @Test(description = "Успешное создание пользователя",
+            dataProviderClass = ExternalProvider::class, dataProvider = "goodUser")
+    fun createUser(name: String, login:String, pass:String, superuser:Boolean, deleted:Boolean, blocked:Boolean,
+                   params:JsonUser, email:String) {
+
+        createUser(name = name, login = login, password = pass, superuser = superuser, params = params, email = email)
+
+        val user = ExternalQuery.getUser(login)
+
+        Assert.assertEquals(user?.name, name, "Не совпадает имя")
+        Assert.assertEquals(user?.login, login, "Не совпадает логин")
+        Assert.assertEquals(user?.encrypted_password, pass, "Не совпадает пароль")
+        Assert.assertEquals(user?.superuser, superuser, "Не совпадает superuser")
+        Assert.assertEquals(user?.deleted, deleted, "Не совпадает deleted")
+        Assert.assertEquals(user?.blocked, blocked, "Не совпадает blocked")
+        Assert.assertEquals(user?.params, params, "Не совпадает имя")
+        Assert.assertEquals(user?.email, email, "Не совпадает имя")
+
     }
 
 

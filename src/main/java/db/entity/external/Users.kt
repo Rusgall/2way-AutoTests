@@ -36,4 +36,17 @@ class Users(id: EntityID<Int>) : IntEntity(id) {
     var deleted by UsersObject.deleted
     var email by UsersObject.email
 
+    override fun equals(other: Any?): Boolean {
+        if (other == this) return true
+        if(other is Users){
+            return other.name == name && other.login == login && other.role_id_fk.id.value == role_id_fk.id.value
+                    && other.client_id.id.value == client_id.id.value && other.encrypted_password == encrypted_password
+                    && other.blocked == blocked && other.superuser == superuser && other.params == params
+                    && other.deleted == deleted && other.email == email
+        } else {
+            return false
+        }
+
+    }
+
 }

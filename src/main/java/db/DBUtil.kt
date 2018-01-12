@@ -49,7 +49,7 @@ object DBUtil {
         val client = ExternalQuery.insertClient(name = adminClientName, params = JsonClient("1", "json name"))
         val role = ExternalQuery.insertRole(name = adminRoleName, description = "admin descr", super_role = true,
                 params = JsonRole("2", "json name"))
-        ExternalQuery.createUser(name = "testName", login = adminLogin, password = adminPass, superuser = true, role = role,
+        ExternalQuery.createUser(name = "adminName", login = adminLogin, password = adminPass, superuser = true, role = role,
                 client = client, params = JsonUser("3", "json name"), email = "email@test.ru")
     }
 

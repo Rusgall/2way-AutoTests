@@ -15,22 +15,29 @@ import utils.adminRoleName
 
 abstract class BaseTest {
 
-    var adminClient : Clients? = null
-    var adminRole : Roles? = null
-    var adminUser : Users? = null
+    lateinit var adminClient: Clients
+    lateinit var adminRole: Roles
+    lateinit var adminUser: Users
 
     @BeforeMethod(description = "Подготовка БД")
-    fun beforeBaseTests(){
+    fun beforeBaseTests() {
         DBUtil.clearDB()
         DBUtil.insertInitialData()
 
         initAdmin()
     }
 
-    private fun initAdmin(){
-        adminClient = ExternalQuery.getClient(adminClientName)
-        adminRole = ExternalQuery.getRole(adminRoleName)
-        adminUser = ExternalQuery.getUser(adminLogin)
+    private fun initAdmin() {
+        ExternalQuery.getClient(adminClientName).let {
+            adminClient = it!!
+        }
+
+        ExternalQuery.getRole(adminRoleName).let {
+            adminRole = it!!
+        }
+        ExternalQuery.getUser(adminLogin).let {
+            adminUser = it!!
+        }
     }
 
 }
