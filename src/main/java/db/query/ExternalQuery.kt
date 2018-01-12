@@ -83,7 +83,11 @@ object ExternalQuery {
         var client: Clients? = null
         transaction {
             setSchema(external)
-            client = Clients.find { ClientsObject.name eq name }.first()
+            val collection = Clients.find { ClientsObject.name eq name }
+            if (collection.empty())
+                client = null
+            else
+                client = collection.first()
         }
 
         return client
@@ -111,6 +115,17 @@ object ExternalQuery {
         return id
     }
 
+    @Step("Разблокируем пользователя")
+    fun unblockUser(login: String): Int? {
+        var id: Int? = null
+        transaction {
+            setSchema(external)
+            TransactionManager.current().exec("SELECT external.unblock_user('$login');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
+    }
+
     @Step("Удаляем пользователя")
     fun deleteUser(login: String): Int? {
         var id: Int? = null
@@ -131,6 +146,16 @@ object ExternalQuery {
         }
 
         return id
+    }
 
+    @Step("Удаляем клиента")
+    fun deleteClient(id: Int): Boolean? {
+        var answer: Boolean? = null
+        transaction {
+            setSchema(external)
+            TransactionManager.current().exec("SELECT external.client_delete('$id');") { it.next(); answer = it.getBoolean(1) }
+        }
+
+        return answer
     }
 }

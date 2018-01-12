@@ -45,6 +45,11 @@ abstract class UserSteps : BaseSteps() {
         return ExternalQuery.blockUser(login)
     }
 
+    @Step("Разблокируем пользователя")
+    fun unblockUser(login: String): Int? {
+        return ExternalQuery.unblockUser(login)
+    }
+
     @Step("Удаляем пользователя")
     fun deleteUser(login: String): Int? {
         return ExternalQuery.deleteUser(login)

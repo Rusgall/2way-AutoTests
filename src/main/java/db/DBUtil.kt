@@ -46,11 +46,11 @@ object DBUtil {
 
     @Step("Генерим начальные данные")
     fun insertInitialData() {
-        val client = ExternalQuery.insertClient(name = adminClientName, params = JsonClient("1", "json name"))
+        val client = ExternalQuery.insertClient(name = adminClientName, params = JsonClient())
         val role = ExternalQuery.insertRole(name = adminRoleName, description = "admin descr", super_role = true,
-                params = JsonRole("2", "json name"))
+                params = JsonRole())
         ExternalQuery.createUser(name = "adminName", login = adminLogin, password = adminPass, superuser = true, role = role,
-                client = client, params = JsonUser("3", "json name"), email = "email@test.ru")
+                client = client, params = JsonUser(), email = "email@test.ru")
     }
 
     fun setSchema(vararg values: Schema){

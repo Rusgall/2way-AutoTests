@@ -22,7 +22,7 @@ object ExternalProvider {
     fun goodUser(): Array<Array<Any>> {
 
         val user: Array<Any> = arrayOf("testName", "testLogin", "testPass", true, false, false,
-                JsonUser("777", "json test"), "emailTest@test.ru")
+                JsonUser(), "emailTest@test.ru")
 
         return arrayOf(user)
     }

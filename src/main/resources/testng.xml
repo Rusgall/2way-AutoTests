@@ -2,6 +2,7 @@
     <test name="External">
         <classes>
             <class name="dbtests.external.UserTests" />
+            <class name="dbtests.external.ClientTests" />
         </classes>
     </test>
 </suite>

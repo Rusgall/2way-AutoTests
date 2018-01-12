@@ -4,6 +4,7 @@ import db.entity.external.Clients
 import db.entity.external.Roles
 import db.query.ExternalQuery
 import dbtests.BaseTest
+import entity.external.JsonClient
 import entity.external.JsonUser
 import io.qameta.allure.Step
 import utils.adminEmail
@@ -18,5 +19,10 @@ abstract class BaseSteps : BaseTest(){
                    params: JsonUser? = adminUser?.params, email: String = adminEmail): Int?{
         return ExternalQuery.createUser(name, login, password, superuser, role, client, params, email)
 
+    }
+
+    @Step("Вставляем клиента")
+    fun insertClient(name: String = "test client", params: JsonClient = JsonClient()): Clients{
+        return ExternalQuery.insertClient(name, params)
     }
 }
