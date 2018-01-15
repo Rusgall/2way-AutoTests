@@ -97,7 +97,7 @@ class UserTests : UserSteps() {
         val idUser = admin?.id?.value
 
         Assert.assertEquals(idFromFun, idUser, "Функция вернула другой id")
-        Assert.assertEquals(admin?.encrypted_password, "надо подумать", "Пароль не сменился")
+        successAuthentication(adminLogin, "password")
     }
 
 
@@ -113,12 +113,13 @@ class UserTests : UserSteps() {
 
         Assert.assertEquals(user?.name, name, "Не совпадает имя")
         Assert.assertEquals(user?.login, login, "Не совпадает логин")
-        Assert.assertEquals(user?.encrypted_password, pass, "Не совпадает пароль")
         Assert.assertEquals(user?.superuser, superuser, "Не совпадает superuser")
         Assert.assertEquals(user?.deleted, deleted, "Не совпадает deleted")
         Assert.assertEquals(user?.blocked, blocked, "Не совпадает blocked")
-        Assert.assertEquals(user?.params, params, "Не совпадает имя")
-        Assert.assertEquals(user?.email, email, "Не совпадает имя")
+        Assert.assertEquals(user?.params, params, "Не совпадает params")
+        Assert.assertEquals(user?.email, email, "Не совпадает email")
+
+        successAuthentication(login, pass)
     }
 
     @Story("Создание пользователя")

@@ -3,7 +3,9 @@ package db.entity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import entity.JsonEntity
+import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.ColumnType
+import org.jetbrains.exposed.sql.Table
 import org.postgresql.util.PGobject
 import utils.JsonUtils
 import java.sql.PreparedStatement

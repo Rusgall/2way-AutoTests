@@ -11,8 +11,20 @@ import entity.external.JsonUser
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import io.qameta.allure.Step
+import org.jetbrains.exposed.sql.deleteAll
 
 object ExternalQuery {
+
+    @Step("Чистим базу от клиентов и юзеров")
+    fun clearDB() {
+        transaction {
+            setSchema(external)
+            UsersObject.deleteAll()
+            ClientsObject.deleteAll()
+            RoleObject.deleteAll()
+        }
+    }
+
     @Step("Вставляем клиента")
     fun insertClient(name: String, params: JsonClient): Clients {
         var client: Clients? = null
@@ -50,7 +62,8 @@ object ExternalQuery {
         var id: Int? = null
         transaction {
             setSchema(public, external)
-            TransactionManager.current().exec("Select external.create_user('$name', '$login', '$password', $superuser, ${role?.id?.value}, ${client?.id?.value}, '$params', '$email');") { it.next(); id = it.getInt(1) }
+            val stmt = "Select external.create_user('$name', '$login', '$password', $superuser, ${role?.id?.value}, ${client?.id?.value}, '$params', '$email');"
+            TransactionManager.current().exec(stmt) { it.next(); id = it.getInt(1) }
         }
 
         return id

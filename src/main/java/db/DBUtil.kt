@@ -1,11 +1,14 @@
 package db
 
+import db.entity.entities.AbonentsObject
+import db.entity.entities.AbonentsListsObject
 import db.entity.Schema.*
 import db.entity.Schema
 import db.entity.external.Clients
 import db.entity.external.ClientsObject
 import db.entity.external.RoleObject
 import db.entity.external.UsersObject
+import db.query.EntitiesQuery
 import db.query.ExternalQuery
 import entity.external.JsonClient
 import entity.external.JsonRole
@@ -37,15 +40,17 @@ object DBUtil {
     @Step("Чистим базу")
     fun clearDB() {
         transaction {
-            connection.schema = "external"
+            setSchema(public, external, entities)
+            AbonentsObject.deleteAll()
+            AbonentsListsObject.deleteAll()
             UsersObject.deleteAll()
             ClientsObject.deleteAll()
             RoleObject.deleteAll()
         }
     }
 
-    @Step("Генерим начальные данные")
-    fun insertInitialData() {
+    @Step("Генерим начального юзера и клиента")
+    fun insertInitialUser() {
         val client = ExternalQuery.insertClient(name = adminClientName, params = JsonClient())
         val role = ExternalQuery.insertRole(name = adminRoleName, description = "admin descr", super_role = true,
                 params = JsonRole())

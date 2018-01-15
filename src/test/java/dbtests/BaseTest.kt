@@ -5,9 +5,6 @@ import db.entity.external.Clients
 import db.entity.external.Roles
 import db.entity.external.Users
 import db.query.ExternalQuery
-import dbsteps.BaseSteps
-import entity.external.JsonUser
-import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import utils.adminClientName
 import utils.adminLogin
@@ -19,10 +16,16 @@ abstract class BaseTest {
     lateinit var adminRole: Roles
     lateinit var adminUser: Users
 
-    @BeforeMethod(description = "Подготовка БД")
-    fun beforeBaseTests() {
+
+    @BeforeMethod(description = "Чистим всю БД")
+    fun beforeClassBaseTests() {
         DBUtil.clearDB()
-        DBUtil.insertInitialData()
+    }
+
+    @BeforeMethod(description = "Подготовка БД")
+    fun beforeMethodBaseTests() {
+        ExternalQuery.clearDB()
+        DBUtil.insertInitialUser()
 
         initAdmin()
     }
