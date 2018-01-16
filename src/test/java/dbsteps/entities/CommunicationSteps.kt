@@ -27,6 +27,6 @@ abstract class CommunicationSteps : BaseSteps() {
 
     @AfterMethod(description = "Чистим базу от абонентов")
     fun afterMethodSteps(){
-//        EntitiesQuery.clearDB()
+        EntitiesQuery.clearDB()
     }
 }

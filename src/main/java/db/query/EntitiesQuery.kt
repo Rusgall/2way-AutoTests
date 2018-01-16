@@ -1,20 +1,15 @@
 package db.query
 
-import db.entity.entities.AbonentsListsObject
-import db.entity.entities.AbonentsObject
 import db.entity.Schema.*
-import db.entity.entities.AbonentsLists
 import db.entity.external.Clients
 import db.entity.external.Roles
 import db.entity.external.Users
-import entity.entities.JsonAbonentsLists
 import entity.external.JsonUser
 import db.DBUtil.setSchema
-import db.entity.entities.Abonents
-import entity.entities.JsonAbonents
-import entity.entities.abonent_source_type
-import entity.entities.abonent_state
+import db.entity.entities.*
+import entity.entities.*
 import io.qameta.allure.Step
+import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -22,10 +17,13 @@ import java.sql.BatchUpdateException
 
 object EntitiesQuery {
 
-    @Step("Чистим абонетов")
-    fun clearDB(){
+    @Step("Чистим абонетов и опросы")
+    fun clearDB() {
         transaction {
             setSchema(entities)
+            CommunicationAbonentsListsObject.deleteAll()
+            CommunicationObject.deleteAll()
+            CommunicationTemplatesObject.deleteAll()
             AbonentsObject.deleteAll()
             AbonentsListsObject.deleteAll()
 
@@ -52,28 +50,41 @@ object EntitiesQuery {
         return al!!
     }
 
-    @Step("Вставляем абонентов")
-    fun insertAbonent(al: AbonentsLists, msisdn: Long, params :JsonAbonents, abonentSource: abonent_source_type, state: abonent_state): Abonents {
+    @Step("Вставляем абонента")
+    fun insertAbonent(al: AbonentsLists, msisdn: Long, params: JsonAbonents, abonentSource: abonent_source_type, state: abonent_state): Abonents {
         var abonent: Abonents? = null
-        try{
-            transaction {
-                setSchema(entities)
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("INSERT INTO  entities.abonents (abonents_list_id, msisdn, params, abonent_source, state) " +
+                    "VALUES('${al.id.value}', $msisdn, '$params', '$abonentSource', '$state');")
 
-                abonent = Abonents.new {
-                    this.abonents_list_id = al
-                    this.msisdn = msisdn
-                    this.params = params
-                    this.abonent_source = abonentSource
-                    this.state = state
-                }
-            }
-        }catch (e : BatchUpdateException){
-            println(e.nextException)
-            throw e
+            abonent = Abonents.find { (AbonentsObject.abonents_list_id eq al.id) and (AbonentsObject.msisdn eq msisdn)}.first()
         }
 
+        abonent ?: Exception("Abonent is null!!")
 
-        abonent ?: Exception("Abonents list is null!!")
         return abonent!!
+    }
+
+    @Step("Создаем опрос")
+    fun createCommunication(user : Users, json:JsonCommunicationData): Int? {
+        var id: Int? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_add_f('${user.id.value}','$json');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
+    }
+
+    @Step("Ищем опрос")
+    fun getCommunication(name: String): Communication? {
+        var role: Communication? = null
+        transaction {
+            setSchema(entities)
+            role = Communication.find { CommunicationObject.name eq name }.first()
+        }
+
+        return role
     }
 }

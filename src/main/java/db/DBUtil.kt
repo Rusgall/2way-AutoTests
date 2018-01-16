@@ -1,6 +1,9 @@
 package db
 
 import db.entity.entities.AbonentsObject
+import db.entity.entities.CommunicationObject
+import db.entity.entities.CommunicationAbonentsListsObject
+import db.entity.entities.CommunicationTemplatesObject
 import db.entity.entities.AbonentsListsObject
 import db.entity.Schema.*
 import db.entity.Schema
@@ -41,6 +44,9 @@ object DBUtil {
     fun clearDB() {
         transaction {
             setSchema(public, external, entities)
+            CommunicationAbonentsListsObject.deleteAll()
+            CommunicationObject.deleteAll()
+            CommunicationTemplatesObject.deleteAll()
             AbonentsObject.deleteAll()
             AbonentsListsObject.deleteAll()
             UsersObject.deleteAll()

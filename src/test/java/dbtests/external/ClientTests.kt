@@ -24,4 +24,10 @@ class ClientTests : ClientSteps() {
         Assert.assertEquals(answer, true, "Функция вернула неверный ответ")
         Assert.assertEquals(updateClient, null, "Клиент не удален")
     }
+
+    @Story("Создание")
+    @Test(description = "Успешно создаем клиента")
+    fun createClient(){
+        Assert.assertTrue(false, "Ждем фикса бд")
+    }
 }
