@@ -13,7 +13,7 @@ object CommunicationAbonentsListsObject : IntIdTable("communication_abonents_lis
 class CommunicationAbonentsLists(id : EntityID<Int>) : IntEntity(id){
     companion object : IntEntityClass<CommunicationAbonentsLists>(CommunicationAbonentsListsObject)
 
-    val communication by Communication referencedOn CommunicationAbonentsListsObject.communication
-    val abonentsList by AbonentsLists referencedOn CommunicationAbonentsListsObject.abonentsList
+    var communication by Communication referencedOn CommunicationAbonentsListsObject.communication
+    var abonentsList by AbonentsLists referencedOn CommunicationAbonentsListsObject.abonentsList
 
 }

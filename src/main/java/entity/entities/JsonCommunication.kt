@@ -20,7 +20,7 @@ class JsonCommunicationData(var status: Any? = null, var name: String = NameComm
                             var abonents_list_id: List<Int>, var communication_template_id: Any? = null,
                             var params: JsonCommunication = JsonCommunication(), var client_id: Any? = null,
                             var abonents_lists: List<Any> = arrayListOf(), var id: Any? = null,
-                            var msisdns: List<Any> = arrayListOf(),
+                            var msisdns: List<Long> = arrayListOf(),
                             var schema: JsonCommunicationTemplate = JsonCommunicationTemplate()) : JsonEntity()
 
 val NameCommunication = "Name Communication"

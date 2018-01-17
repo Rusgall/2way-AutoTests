@@ -78,13 +78,48 @@ object EntitiesQuery {
     }
 
     @Step("Ищем опрос")
-    fun getCommunication(name: String): Communication? {
-        var role: Communication? = null
+    fun getCommunication(name: String): Communication {
+        var communication: Communication? = null
         transaction {
             setSchema(entities)
-            role = Communication.find { CommunicationObject.name eq name }.first()
+            communication = Communication.find { CommunicationObject.name eq name }.first()
         }
 
-        return role
+        return communication!!
     }
+
+    @Step("Ищем опрос")
+    fun getCommunicationTemplate(name: String): CommunicationTemplates? {
+        var communicationTemplate: CommunicationTemplates? = null
+        transaction {
+            setSchema(entities)
+            communicationTemplate = CommunicationTemplates.find { CommunicationTemplatesObject.name eq name }.first()
+        }
+
+        return communicationTemplate
+    }
+
+    @Step("Ищем списки абонентов опроса")
+    fun getCommunicationAbonentsLists(communication: Communication) : List<CommunicationAbonentsLists>{
+        var communicationAbonentsLists : List<CommunicationAbonentsLists>? = null
+        transaction {
+            setSchema(entities)
+            communicationAbonentsLists = CommunicationAbonentsLists.find{CommunicationAbonentsListsObject.communication eq communication.id}.toList()
+        }
+
+        return communicationAbonentsLists!!
+    }
+
+    @Step("Ищем список абонентов")
+    fun getAbonentsList(name: String): AbonentsLists{
+        var abonentsList : AbonentsLists? = null
+        transaction {
+            setSchema(entities)
+            abonentsList = AbonentsLists.find{AbonentsListsObject.name eq name}.first()
+        }
+
+        return abonentsList!!
+    }
+
+
 }
