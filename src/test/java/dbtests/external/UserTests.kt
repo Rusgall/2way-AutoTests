@@ -10,6 +10,7 @@ import db.entity.external.UsersObject
 import db.query.ExternalQuery
 import dbsteps.external.UserSteps
 import entity.external.JsonUser
+import io.qameta.allure.Epic
 import io.qameta.allure.Feature
 import io.qameta.allure.Step
 import io.qameta.allure.Story
@@ -21,42 +22,42 @@ import utils.adminIncorrectPass
 import utils.adminLogin
 import utils.adminPass
 
-@Feature("User")
+@Feature("EXTERNAL")
 class UserTests : UserSteps() {
 
-    @Story("Аутентификация")
+    @Story("authentication_user")
     @Test(description = "Успешная аутентификация")
     fun successAuthentication() {
         successAuthentication(adminLogin, adminPass)
     }
 
-    @Story("Аутентификация")
+    @Story("authentication_user")
     @Test(description = "Ошибка аутентификации: юзер заблокирован")
     fun failAuthenticationUserBlocked() {
         blockUser(adminLogin)
         failAuthentication(adminLogin, adminPass, "ОШИБКА: User is blocked: login=$adminLogin")
     }
 
-    @Story("Аутентификация")
+    @Story("authentication_user")
     @Test(description = "Ошибка аутентификации: юзер удален")
     fun failAuthenticationUserDeleted() {
         deleteUser(adminLogin)
         failAuthentication(adminLogin, adminPass, "ОШИБКА: No such user: login=$adminLogin")
     }
 
-    @Story("Аутентификация")
+    @Story("authentication_user")
     @Test(description = "Ошибка аутентификации: юзера нет")
     fun failAuthenticationIncorrectLogin() {
         failAuthentication(adminIncorrectLogin, adminPass, "ОШИБКА: No such user: login=$adminIncorrectLogin")
     }
 
-    @Story("Аутентификация")
+    @Story("authentication_user")
     @Test(description = "Ошибка аутентификации: неправильный пароль")
     fun failAuthenticationIncorrectPassword() {
         failAuthentication(adminLogin, adminIncorrectPass, "ОШИБКА: Incorrect password")
     }
 
-    @Story("Блокировка")
+    @Story("block_user")
     @Test(description = "Успешная блокировка")
     fun blockUser() {
         //Блокируем админа
@@ -70,7 +71,7 @@ class UserTests : UserSteps() {
         Assert.assertEquals(admin?.blocked, true, "Пользователь не заблокировался")
     }
 
-    @Story("Блокировка")
+    @Story("unblock_user")
     @Test(description = "Успешная разблокировка")
     fun unblockUser() {
         //Блокируем админа
@@ -86,7 +87,7 @@ class UserTests : UserSteps() {
         Assert.assertEquals(admin?.blocked, false, "Пользователь не разблокировался")
     }
 
-    @Story("Смена пароля")
+    @Story("change_user_password")
     @Test(description = "Успешная смена пароля")
     fun changePassword() {
         //Меняем пароль админу
@@ -101,7 +102,7 @@ class UserTests : UserSteps() {
     }
 
 
-    @Story("Создание пользователя")
+    @Story("create_user")
     @Test(description = "Успешное создание пользователя",
             dataProviderClass = ExternalProvider::class, dataProvider = "goodUser")
     fun createUser(name: String, login:String, pass:String, superuser:Boolean, deleted:Boolean, blocked:Boolean,
@@ -122,7 +123,7 @@ class UserTests : UserSteps() {
         successAuthentication(login, pass)
     }
 
-    @Story("Создание пользователя")
+    @Story("create_user")
     @Test(description = "Создание пользователя с уже существующим логином",
             dataProviderClass = ExternalProvider::class, dataProvider = "goodUser")
     fun createUserLoginAlreadyExists(name: String, login:String, pass:String, superuser:Boolean, deleted:Boolean, blocked:Boolean,
@@ -139,9 +140,9 @@ class UserTests : UserSteps() {
         Assert.assertEquals(actualError, "ОШИБКА: User '$adminLogin' already exists!", "Ошибка не совпадает")
     }
 
-    @Story("Удаление")
+    @Story("delete_user")
     @Test(description = "Успешное удаление")
-    fun deletUser() {
+    fun deleteUser() {
         //Блокируем админа
         val idFromFun = deleteUser(adminLogin)
 

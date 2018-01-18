@@ -1,0 +1,6 @@
+package entity.logic
+
+enum class init_base_type_type {NORMAL, TEST, TRIGGER}
+enum class msg_type_type {sms, viber}
+enum class talk_status {READY_FOR_START, PROCESSING, FINISHED, STOPPED, FINISHED_WRONG_ANSWER,
+    FINISHED_TIMEOUT, FINISHED_TALK_TIMEOUT, FINISHED_COMMUNICATION_TIMEOUT, FINISHED_INVALID_MSISDN}

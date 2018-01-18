@@ -6,6 +6,7 @@ import db.entity.external.Clients
 import db.entity.external.Roles
 import db.entity.external.*
 import entity.external.JsonClient
+import entity.external.JsonClientData
 import entity.external.JsonRole
 import entity.external.JsonUser
 import org.jetbrains.exposed.sql.transactions.TransactionManager
@@ -170,5 +171,16 @@ object ExternalQuery {
         }
 
         return answer
+    }
+
+    @Step("Создаем клиента")
+    fun createClient(params : JsonClientData): Int {
+        var id: Int? = null
+        transaction {
+            setSchema(external)
+            TransactionManager.current().exec("SELECT external.client_add('$params');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
     }
 }

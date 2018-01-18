@@ -27,3 +27,6 @@ data class Brands(@SerializedName("95") var _95: String = "BEELINE", @Serialized
 data class JsonClient(var brands: Brands = Brands(), var sending_params: SendingParams = SendingParams(),
                       var communication_type: List<String> = arrayListOf("active", "passive"),
                       var source_by_api_enabled: Boolean = true) : JsonEntity()
+
+class JsonClientData(var name : String = "Client Name Default", var params:JsonClient = JsonClient()) : JsonEntity()
+

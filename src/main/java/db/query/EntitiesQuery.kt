@@ -2,25 +2,30 @@ package db.query
 
 import db.entity.Schema.*
 import db.entity.external.Clients
+import db.entity.logic.TalksObject
 import db.entity.external.Roles
 import db.entity.external.Users
 import entity.external.JsonUser
 import db.DBUtil.setSchema
 import db.entity.entities.*
 import entity.entities.*
+import entity.logic.ResultStartCommunication
 import io.qameta.allure.Step
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.postgresql.util.PGobject
 import java.sql.BatchUpdateException
+import java.sql.ResultSet
 
 object EntitiesQuery {
 
     @Step("Чистим абонетов и опросы")
     fun clearDB() {
         transaction {
-            setSchema(entities)
+            setSchema(entities, logic)
+            TalksObject.deleteAll()
             CommunicationAbonentsListsObject.deleteAll()
             CommunicationObject.deleteAll()
             CommunicationTemplatesObject.deleteAll()
@@ -88,7 +93,7 @@ object EntitiesQuery {
         return communication!!
     }
 
-    @Step("Ищем опрос")
+    @Step("Ищем схему")
     fun getCommunicationTemplate(name: String): CommunicationTemplates? {
         var communicationTemplate: CommunicationTemplates? = null
         transaction {
@@ -119,6 +124,35 @@ object EntitiesQuery {
         }
 
         return abonentsList!!
+    }
+
+    @Step("Ищем абонентов по списку абонентов")
+    fun getAbonents(abonentsLists: AbonentsLists): List<Abonents>{
+        var abonents : List<Abonents>? = null
+        transaction {
+            setSchema(entities)
+            abonents = Abonents.find{AbonentsObject.abonents_list_id eq abonentsLists.id}.toList()
+        }
+
+        return abonents!!
+    }
+
+    @Step("Запускаем опрос")
+    fun startCommunication(user: Users, communication: Communication) : ResultStartCommunication {
+        var result : Any? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_start_f('${user.id.value}','${communication.id.value}');",
+                    { it.next(); result = it.getObject(1) })
+        }
+
+        if (result is PGobject){
+            return ResultStartCommunication((result as PGobject).value)
+        } else {
+            return ResultStartCommunication()
+        }
+
+
     }
 
 

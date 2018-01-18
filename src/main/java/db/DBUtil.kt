@@ -5,6 +5,7 @@ import db.entity.entities.CommunicationObject
 import db.entity.entities.CommunicationAbonentsListsObject
 import db.entity.entities.CommunicationTemplatesObject
 import db.entity.entities.AbonentsListsObject
+import db.entity.logic.TalksObject
 import db.entity.Schema.*
 import db.entity.Schema
 import db.entity.external.Clients
@@ -43,7 +44,8 @@ object DBUtil {
     @Step("Чистим базу")
     fun clearDB() {
         transaction {
-            setSchema(public, external, entities)
+            setSchema(public, external, entities, logic)
+            TalksObject.deleteAll()
             CommunicationAbonentsListsObject.deleteAll()
             CommunicationObject.deleteAll()
             CommunicationTemplatesObject.deleteAll()
