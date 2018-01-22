@@ -2,13 +2,13 @@ package entity.logic
 
 import entity.entities.result_code_type
 
-//class ResultStartCommunication(value : String){
+//class ResultCommunication(value : String){
 //    val result = value.get(1) == 't'
 //    val result_code = result_code_type.valueOf(value.substring(3, value.length-1))
 //
 //}
 
-class ResultStartCommunication {
+class ResultCommunication {
 
     var result = false
     var result_code = result_code_type.STUB
@@ -25,8 +25,12 @@ class ResultStartCommunication {
     constructor()
 
     override fun equals(other: Any?): Boolean {
-        val o = other as? ResultStartCommunication ?: return false
+        val o = other as? ResultCommunication ?: return false
 
         return o.result == result && o.result_code == result_code
+    }
+
+    override fun toString(): String {
+        return "[result: $result, result_code: $result_code]"
     }
 }

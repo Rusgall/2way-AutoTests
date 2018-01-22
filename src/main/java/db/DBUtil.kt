@@ -19,6 +19,7 @@ import entity.external.JsonRole
 import entity.external.JsonUser
 import io.qameta.allure.Step
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.StdOutSqlLogger
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.TransactionManager

@@ -3,21 +3,17 @@ package db.query
 import db.entity.Schema.*
 import db.entity.external.Clients
 import db.entity.logic.TalksObject
-import db.entity.external.Roles
 import db.entity.external.Users
-import entity.external.JsonUser
 import db.DBUtil.setSchema
 import db.entity.entities.*
 import entity.entities.*
-import entity.logic.ResultStartCommunication
+import entity.logic.ResultCommunication
 import io.qameta.allure.Step
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.postgresql.util.PGobject
-import java.sql.BatchUpdateException
-import java.sql.ResultSet
 
 object EntitiesQuery {
 
@@ -63,7 +59,7 @@ object EntitiesQuery {
             TransactionManager.current().exec("INSERT INTO  entities.abonents (abonents_list_id, msisdn, params, abonent_source, state) " +
                     "VALUES('${al.id.value}', $msisdn, '$params', '$abonentSource', '$state');")
 
-            abonent = Abonents.find { (AbonentsObject.abonents_list_id eq al.id) and (AbonentsObject.msisdn eq msisdn)}.first()
+            abonent = Abonents.find { (AbonentsObject.abonents_list_id eq al.id) and (AbonentsObject.msisdn eq msisdn) }.first()
         }
 
         abonent ?: Exception("Abonent is null!!")
@@ -72,7 +68,7 @@ object EntitiesQuery {
     }
 
     @Step("Создаем опрос")
-    fun createCommunication(user : Users, json:JsonCommunicationData): Int? {
+    fun createCommunication(user: Users, json: JsonCommunicationData): Int? {
         var id: Int? = null
         transaction {
             setSchema(entities)
@@ -105,54 +101,90 @@ object EntitiesQuery {
     }
 
     @Step("Ищем списки абонентов опроса")
-    fun getCommunicationAbonentsLists(communication: Communication) : List<CommunicationAbonentsLists>{
-        var communicationAbonentsLists : List<CommunicationAbonentsLists>? = null
+    fun getCommunicationAbonentsLists(communication: Communication): List<CommunicationAbonentsLists> {
+        var communicationAbonentsLists: List<CommunicationAbonentsLists>? = null
         transaction {
             setSchema(entities)
-            communicationAbonentsLists = CommunicationAbonentsLists.find{CommunicationAbonentsListsObject.communication eq communication.id}.toList()
+            communicationAbonentsLists = CommunicationAbonentsLists.find { CommunicationAbonentsListsObject.communication eq communication.id }.toList()
         }
 
         return communicationAbonentsLists!!
     }
 
     @Step("Ищем список абонентов")
-    fun getAbonentsList(name: String): AbonentsLists{
-        var abonentsList : AbonentsLists? = null
+    fun getAbonentsList(name: String): AbonentsLists {
+        var abonentsList: AbonentsLists? = null
         transaction {
             setSchema(entities)
-            abonentsList = AbonentsLists.find{AbonentsListsObject.name eq name}.first()
+            abonentsList = AbonentsLists.find { AbonentsListsObject.name eq name }.first()
         }
 
         return abonentsList!!
     }
 
     @Step("Ищем абонентов по списку абонентов")
-    fun getAbonents(abonentsLists: AbonentsLists): List<Abonents>{
-        var abonents : List<Abonents>? = null
+    fun getAbonents(abonentsLists: AbonentsLists): List<Abonents> {
+        var abonents: List<Abonents>? = null
         transaction {
             setSchema(entities)
-            abonents = Abonents.find{AbonentsObject.abonents_list_id eq abonentsLists.id}.toList()
+            abonents = Abonents.find { AbonentsObject.abonents_list_id eq abonentsLists.id }.toList()
         }
 
         return abonents!!
     }
 
     @Step("Запускаем опрос")
-    fun startCommunication(user: Users, communication: Communication) : ResultStartCommunication {
-        var result : Any? = null
+    fun startCommunication(user: Users, communication: Communication): ResultCommunication {
+        var result: Any? = null
         transaction {
             setSchema(entities)
             TransactionManager.current().exec("SELECT entities.web_communication_start_f('${user.id.value}','${communication.id.value}');",
                     { it.next(); result = it.getObject(1) })
         }
 
-        if (result is PGobject){
-            return ResultStartCommunication((result as PGobject).value)
+        if (result is PGobject) {
+            return ResultCommunication((result as PGobject).value)
         } else {
-            return ResultStartCommunication()
+            return ResultCommunication()
+        }
+    }
+
+    @Step("Останваливаем опрос")
+    fun stopCommunication(user: Users, communication: Communication): ResultCommunication {
+        var result: Any? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_stop_f('${user.id.value}','${communication.id.value}');",
+                    { it.next(); result = it.getObject(1) })
         }
 
+        if (result is PGobject) {
+            return ResultCommunication((result as PGobject).value)
+        } else {
+            return ResultCommunication()
+        }
+    }
 
+    @Step("Копируем опрос")
+    fun copyCommunication(user: Users, communcation: Communication): Int? {
+        var id: Int? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_copy_f('${user.id.value}','${communcation.id.value}');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
+    }
+
+    @Step("Удаляем опрос")
+    fun deleteCommunication(user: Users, communcation: Communication): Int? {
+        var id: Int? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_delete_f('${user.id.value}','${communcation.id.value}');") { it.next(); id = it.getInt(1) }
+        }
+
+        return id
     }
 
 

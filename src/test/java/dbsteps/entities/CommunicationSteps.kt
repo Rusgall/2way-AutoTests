@@ -18,6 +18,7 @@ import org.testng.annotations.BeforeMethod
 import db.entity.Schema.*
 import db.entity.logic.Talks
 import entity.logic.*
+import org.jetbrains.exposed.sql.transactions.TransactionManager
 
 abstract class CommunicationSteps : BaseSteps() {
 
@@ -97,8 +98,8 @@ abstract class CommunicationSteps : BaseSteps() {
     }
 
     @Step("Проверяем результат старта опроса")
-    fun checkResultSartCommunication(actualResult: ResultStartCommunication, expectResult: ResultStartCommunication) {
-        Assert.assertEquals(actualResult, expectResult)
+    fun checkResultSartCommunication(actualResult: ResultCommunication, expectResult: ResultCommunication) {
+        Assert.assertEquals(actualResult, expectResult, "Ошибка не совпадает")
     }
 
     @Step("Проверяем создание разговора")
@@ -116,8 +117,23 @@ abstract class CommunicationSteps : BaseSteps() {
             Assert.assertEquals(talk.status, status, "status неправильный")
             Assert.assertEquals(talk.has_answer, hasAnswer, "hasAnswer не совпадает")
         }
-
-
     }
+
+    @Step("Меняем статус опроса")
+    fun changeStatusCommunication(communication: Communication, newStatus: communication_status_type){
+        transaction {
+            DBUtil.setSchema(entities)
+            TransactionManager.current().exec("Update entities.communications SET status = '$newStatus' where id = ${communication.id.value};")
+        }
+    }
+
+    @Step("Меняем статус разговора")
+    fun changeStatusTalk(talk: Talks, newStatus: talk_status){
+        transaction {
+            DBUtil.setSchema(logic)
+            TransactionManager.current().exec("Update logic.talks SET status = '$newStatus' where id = ${talk.id.value};")
+        }
+    }
+
 
 }

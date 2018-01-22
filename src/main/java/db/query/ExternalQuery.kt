@@ -82,14 +82,14 @@ object ExternalQuery {
     }
 
     @Step("Ищем юзера")
-    fun getUser(login: String): Users? {
+    fun getUser(login: String): Users {
         var user: Users? = null
         transaction {
             setSchema(external)
             user = Users.find { UsersObject.login eq login }.first()
         }
 
-        return user
+        return user!!
     }
 
     @Step("Ищем клиента")
@@ -181,6 +181,6 @@ object ExternalQuery {
             TransactionManager.current().exec("SELECT external.client_add('$params');") { it.next(); id = it.getInt(1) }
         }
 
-        return id
+        return id!!
     }
 }

@@ -5,4 +5,13 @@
             <class name="dbtests.external.ClientTests" />
         </classes>
     </test>
+    <test name="Entities">
+        <classes>
+            <class name="dbtests.entities.communications.CommunicationDeleteTests" />
+            <class name="dbtests.entities.communications.CommunicationCopyTests" />
+            <class name="dbtests.entities.communications.CommunicationCreateTests" />
+            <class name="dbtests.entities.communications.CommunicationStartTests" />
+            <class name="dbtests.entities.communications.CommunicationStopTests" />
+        </classes>
+    </test>
 </suite>
