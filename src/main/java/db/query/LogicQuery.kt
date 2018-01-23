@@ -17,7 +17,7 @@ object LogicQuery {
         var talks: List<Talks>? = null
         transaction {
             setSchema(logic)
-            talks = Talks.find { TalksObject.communication_id eq communication.id }.toList()
+            talks = Talks.find { TalksObject.communication_id eq communication.id }.toList().asReversed()
         }
 
         return talks!!

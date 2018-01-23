@@ -103,17 +103,19 @@ abstract class CommunicationSteps : BaseSteps() {
     }
 
     @Step("Проверяем создание разговора")
-    fun checkCreateTalks(communication: Communication, abonent: Abonents, msisdn: Long, schema: JsonCommunicationTemplate,
+    fun checkCreateTalks(communication: Communication, abonents: List<Abonents>, msisdn: Long, schema: JsonCommunicationTemplate,
                          trace: Array<Int>, receiveSn: String, init_base_type_type: init_base_type_type,
                          msgType: msg_type_type, status: talk_status, hasAnswer: Boolean, talk:Talks) {
         transaction {
             DBUtil.setSchema(entities, logic)
             Assert.assertEquals(talk.communication.id.value, communication.id.value, "Разговор из другого опроса")
-            Assert.assertEquals(talk.abonent.id.value, abonent.id.value, "Разговор другого абонента")
+            Assert.assertTrue( abonents.map { it.id.value }.contains(talk.abonent.id.value), "Разговор другого абонента")
             Assert.assertEquals(talk.msisdn, msisdn, "Не совпадает номер телефона")
             Assert.assertEquals(talk.schema, schema, "Схема разговора не совпадает")
             Assert.assertEquals(talk.trace, trace, "trace не совпадает")
             Assert.assertEquals(talk.receive_sn, receiveSn, "receive_sn не совпадает")
+            Assert.assertEquals(talk.init_base_type, init_base_type_type, "init_base_type_type не совпадает")
+            Assert.assertEquals(talk.msg_type, msgType, "init_base_type_type не совпадает")
             Assert.assertEquals(talk.status, status, "status неправильный")
             Assert.assertEquals(talk.has_answer, hasAnswer, "hasAnswer не совпадает")
         }
@@ -133,6 +135,24 @@ abstract class CommunicationSteps : BaseSteps() {
             DBUtil.setSchema(logic)
             TransactionManager.current().exec("Update logic.talks SET status = '$newStatus' where id = ${talk.id.value};")
         }
+    }
+
+    @Step("Создаем списки абонентов")
+    fun createAbonentsLists(abonentsListsMsisdns: List<List<Long>>): List<AbonentsLists>{
+
+        val abonentsLists = arrayListOf<AbonentsLists>()
+
+        for (msisdns in abonentsListsMsisdns){
+            //Создаем список абонентов
+            abonentsLists.add(EntitiesQuery.insertAbonentsList(adminClient, "Abonents Lists ${abonentsLists.size}",
+                    false, false, JsonAbonentsLists(), adminUser))
+            for(msisdn in msisdns){
+                //Наполняем его номерами
+                EntitiesQuery.insertAbonent(abonentsLists.last(), msisdn, JsonAbonents(), abonent_source_type.DB_LIST, abonent_state.UNCHECKED)
+            }
+        }
+
+        return abonentsLists
     }
 
 

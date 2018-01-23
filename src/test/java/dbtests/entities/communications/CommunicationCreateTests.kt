@@ -3,10 +3,7 @@ package dbtests.entities.communications
 import dataprovider.EntitiesProvider
 import db.query.EntitiesQuery
 import dbsteps.entities.CommunicationSteps
-import entity.entities.JsonCommunication
-import entity.entities.JsonCommunicationData
-import entity.entities.JsonCommunicationTemplate
-import entity.entities.communication_status_type
+import entity.entities.*
 import io.qameta.allure.Feature
 import io.qameta.allure.Story
 import org.testng.annotations.Test
@@ -56,5 +53,34 @@ class CommunicationCreateTests : CommunicationSteps() {
         //Если номера ввели вручную или выбран api, проверим что список абонентов скрыт, но не удален
         if (jsonCommunication.db_src == "manual" || jsonCommunication.db_src == "api")
             checkAbonentsListHidden(abonentsList)
+    }
+
+    @Story("web_communication_add_f")
+    @Test(description = "Успешное создание опроса: Несколько список абонентов")
+    fun createCommunicationSeveralAbonentLists() {
+
+        //Создадим 3 списка абонентов, часть номеров будет пересекаться
+        val msisdns_1 : List<Long> = arrayListOf(1000001, 1000002, 1000003)
+        val msisdns_2 : List<Long> = arrayListOf(1000002, 1000003, 1000004)
+        val msisdns_3 : List<Long> = arrayListOf(1000005, 1000006, 1000007)
+        val abonentsLists = createAbonentsLists(arrayListOf(msisdns_1, msisdns_2, msisdns_3))
+
+        //Создаем опрос
+        val idFromFun = EntitiesQuery.createCommunication(adminUser,
+                JsonCommunicationData(abonents_list_id = abonentsLists.map { it.id.value }))
+
+        //Ищем наш опрос
+        val communication = EntitiesQuery.getCommunication(NameCommunication)
+        //Ищем схему опроса
+        val communcationTemplate = EntitiesQuery.getCommunicationTemplate(NameCommunication)
+
+        //Проверяем опрос
+        checkCommunication(communication, idFromFun, adminClient, communcationTemplate, JsonCommunication(),
+                communication_status_type.DRAFT, NameCommunication, adminUser)
+        //Проверяем схему опроса
+        checkCommunicationTemplate(communication.id.value, adminClient, NameCommunication, JsonCommunicationTemplate(),
+                adminUser, communcationTemplate)
+        //Проверяем что списки абонентов привязались к разговору
+        checkCommunicationAbonentsLists(communication, abonentsLists)
     }
 }

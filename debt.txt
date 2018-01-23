@@ -1,6 +1,5 @@
 Долг по тестам:
 web_communication_start_f - INVALID
-web_communication_start_f - Manual and API
-web_communication_start_f - Несколько баз абонентов
-web_communication_add_f - Несколько баз абонентов
+web_communication_start_f - Подстановки
+web_communication_add_f - Подстановки
 client_add - createClient включить тест когда фиксанут бд
