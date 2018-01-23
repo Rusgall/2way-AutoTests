@@ -6,7 +6,7 @@ import db.query.ExternalQuery
 import db.query.LogicQuery
 import dbsteps.entities.CommunicationSteps
 import entity.entities.*
-import entity.logic.ResultCommunication
+import entity.results.ResultCommunication
 import entity.logic.talk_status
 import io.qameta.allure.Feature
 import io.qameta.allure.Story

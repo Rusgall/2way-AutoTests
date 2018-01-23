@@ -19,8 +19,8 @@ data class JsonCommunication(var date_from: String = "2018-01-01 10:00:00", var 
 class JsonCommunicationData(var status: Any? = null, var name: String = NameCommunication,
                             var abonents_list_id: List<Int>, var communication_template_id: Any? = null,
                             var params: JsonCommunication = JsonCommunication(), var client_id: Any? = null,
-                            var abonents_lists: List<Any> = arrayListOf(), var id: Any? = null,
-                            var msisdns: List<Long> = arrayListOf(),
+                            var abonents_lists: List<Any> = arrayListOf(), var id: Int? = null,
+                            var msisdns: List<Long>? = arrayListOf(),
                             var schema: JsonCommunicationTemplate = JsonCommunicationTemplate()) : JsonEntity()
 
 val NameCommunication = "Name Communication"

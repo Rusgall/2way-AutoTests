@@ -16,7 +16,7 @@ class CommunicationCreateTests : CommunicationSteps() {
             dataProviderClass = EntitiesProvider::class, dataProvider = "goodCommunications")
     fun createCommunication(jsonCommunication: JsonCommunication, status: communication_status_type,
                             name: String, jsonCommunicationTemplate: JsonCommunicationTemplate,
-                            msisdns: List<Long>) {
+                            msisdns: List<Long>?) {
         //Корректируем список абонентов для опроса
         val abonents = arrayListOf<Int>()
         var abonentsListName = alName
@@ -48,7 +48,7 @@ class CommunicationCreateTests : CommunicationSteps() {
 
         //Если номера ввели вручную, проверим что создались абоненты
         if (jsonCommunication.db_src == "manual")
-            checkAbonentsWithAbonentsList(msisdns, abonentsList)
+            checkAbonentsWithAbonentsList(msisdns!!, abonentsList)
 
         //Если номера ввели вручную или выбран api, проверим что список абонентов скрыт, но не удален
         if (jsonCommunication.db_src == "manual" || jsonCommunication.db_src == "api")

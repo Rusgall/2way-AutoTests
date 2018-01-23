@@ -18,6 +18,7 @@ import org.testng.annotations.BeforeMethod
 import db.entity.Schema.*
 import db.entity.logic.Talks
 import entity.logic.*
+import entity.results.ResultCommunication
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 
 abstract class CommunicationSteps : BaseSteps() {
@@ -62,7 +63,7 @@ abstract class CommunicationSteps : BaseSteps() {
 
         transaction {
             DBUtil.setSchema(entities, external)
-            Assert.assertEquals(communicationTemplate?.id?.value, id, "Функция вернула неверный id")
+            Assert.assertEquals(communicationTemplate?.id?.value, id, "Неверный id")
             Assert.assertEquals(communicationTemplate?.client?.id?.value, client.id.value, "У схемы не тот клиент")
             Assert.assertEquals(communicationTemplate?.name, name, "У схемы не совпадает имя")
             Assert.assertEquals(communicationTemplate?.schema, schema, "У схемы не совпадает схема")
@@ -75,6 +76,7 @@ abstract class CommunicationSteps : BaseSteps() {
     fun checkCommunicationAbonentsLists(communication: Communication, abonentsLists: List<AbonentsLists>) {
 
         val cal = EntitiesQuery.getCommunicationAbonentsLists(communication)
+        Assert.assertEquals(cal.size, abonentsLists.size, "Неверное кол-во списков абонентов привязалось к опросу")
         for (al in cal) {
             transaction {
                 Assert.assertEquals(al.communication.id.value, communication.id.value, "Абонент лист привязался не к тому опросу")

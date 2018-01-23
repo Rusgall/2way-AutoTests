@@ -3,9 +3,7 @@ package dataprovider
 import db.DBUtil
 import db.query.EntitiesQuery
 import dbsteps.entities.CommunicationSteps
-import entity.entities.JsonCommunication
-import entity.entities.JsonCommunicationTemplate
-import entity.entities.communication_status_type
+import entity.entities.*
 import entity.logic.init_base_type_type
 import entity.logic.msg_type_type
 import entity.logic.talk_status
@@ -15,16 +13,16 @@ object EntitiesProvider {
 
     @DataProvider(name = "goodCommunications")
     @JvmStatic
-    fun goodCommunications(): Array<Array<Any>> {
+    fun goodCommunications(): Array<Array<Any?>> {
         val msisnds = arrayListOf<Long>(1000001, 1000002, 10000003)
 
         return arrayOf(
-                arrayOf(JsonCommunication(db_src = "list"), communication_status_type.DRAFT, "Источник - Списки абонентов",
-                        JsonCommunicationTemplate(), arrayListOf<Long>()),
-                arrayOf(JsonCommunication(db_src = "manual"), communication_status_type.DRAFT, "Источник - Вручную",
+                arrayOf<Any?>(JsonCommunication(db_src = "list"), communication_status_type.DRAFT, "Источник - Списки абонентов",
+                        JsonCommunicationTemplate(), null),
+                arrayOf<Any?>(JsonCommunication(db_src = "manual"), communication_status_type.DRAFT, "Источник - Вручную",
                         JsonCommunicationTemplate(), msisnds),
-                arrayOf(JsonCommunication(db_src = "api"), communication_status_type.DRAFT, "Источник - Api",
-                        JsonCommunicationTemplate(), arrayListOf<Long>()))
+                arrayOf<Any?>(JsonCommunication(db_src = "api"), communication_status_type.DRAFT, "Источник - Api",
+                        JsonCommunicationTemplate(), null))
     }
 
     @DataProvider(name = "goodTalks")
@@ -112,6 +110,7 @@ object EntitiesProvider {
                         JsonCommunication(date_from = "2019-01-01 10:00:00", date_to = "2020-01-01 10:00:00"))
         )
     }
+
     @DataProvider(name = "deleteCommunicationWithNoDraftStatus")
     @JvmStatic
     fun deleteCommunicationWithNoDraftStatus(): Array<Array<Any>> {
@@ -124,6 +123,48 @@ object EntitiesProvider {
         )
     }
 
+    @DataProvider(name = "saveCommunications")
+    @JvmStatic
+    fun saveCommunications(): Array<Array<Any>> {
+        val msgType = MsgType("viber", "2105", "1105", 600)
+        val jsonCommunication = JsonCommunication(date_from = "2019-11-11 11:11:11", date_to = "2020-02-02 11:20:20",
+                start_hour = "11:11:11", end_hour = "22:22:22", db_src = "list", msg_types = arrayListOf(msgType),
+                abonents_settings = AbonentsSettings(arrayListOf("test")), speed_per_minute = 300)
 
+        val WrongAnswer = "Новый Текст при превышении лимита неверных ответов"
+        val InitalQuestion = "Новый Текст вопроса"
+        val AnswerMessage = "Новый Текст при неверном ответе"
+        val FinalMessage = "Новый Текст финального сообщения"
+        val Question = "Новый Текст вопроса"
+        val Answer1 = "Новый Ответ1"
+        val Answer2 = "Новый Ответ2"
 
+        val FinalNextMessage = Message(sms = Sms(FinalMessage), viber = Viber(text = FinalMessage))
+        val QuestionNextMessage = Message(sms = Sms(Question), viber = Viber(text = Question))
+
+        val ChildNextFinal = Child(next = Next("final", FinalNextMessage, null, null),
+                check_text = CheckText(answer_text_array = arrayListOf(Answer1)))
+        val ChildNextQuestion = Child(next = Next("asnwer", QuestionNextMessage, QuestionParams(), arrayListOf(ChildNextFinal)),
+                check_text = CheckText(answer_text_array = arrayListOf(Answer2)))
+
+        val jsonCommunicationTemplate = JsonCommunicationTemplate(params = Params(
+                init_question = InitQuestion(Sms(InitalQuestion), viber = Viber(text = InitalQuestion)),
+                question_params = QuestionParams(AnyAnswerMessage(Sms(AnswerMessage), Viber(text = AnswerMessage)),
+                        wrong_message = WrongMessage(sms = Sms(WrongAnswer), viber = Viber(text = "WrongAnswer"))),
+                answer_params = AnswerParams(answer_time = 2, answer_period = "min")), children = arrayListOf(
+                ChildNextFinal, ChildNextQuestion))
+
+        return arrayOf(
+                arrayOf<Any>(jsonCommunication, jsonCommunicationTemplate, "Save Communication 1")
+        )
+    }
+
+    @DataProvider(name = "saveCommunicationsFromList")
+    @JvmStatic
+    fun saveCommunicationsFromList(): Array<Array<Any?>> {
+        return arrayOf(
+                arrayOf<Any?>("manual", arrayListOf<Long>(1000001, 1000002, 1000003)),
+                arrayOf<Any?>("api", null)
+        )
+    }
 }

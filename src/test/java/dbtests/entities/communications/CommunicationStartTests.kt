@@ -7,7 +7,7 @@ import db.query.ExternalQuery
 import db.query.LogicQuery
 import dbsteps.entities.CommunicationSteps
 import entity.entities.*
-import entity.logic.ResultCommunication
+import entity.results.ResultCommunication
 import entity.logic.init_base_type_type
 import entity.logic.msg_type_type
 import entity.logic.talk_status

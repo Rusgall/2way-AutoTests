@@ -1,5 +1,9 @@
 Долг по тестам:
 web_communication_start_f - INVALID
 web_communication_start_f - Подстановки
+web_communication_start_f - Остановка тестовых разговоров
+web_communication_test_f - Остановка тестовых разговоров
+web_communication_test_f - Подстановки
 web_communication_add_f - Подстановки
+web_communication_copy_f - написать проверку результата функции
 client_add - createClient включить тест когда фиксанут бд

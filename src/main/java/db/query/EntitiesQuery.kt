@@ -7,7 +7,7 @@ import db.entity.external.Users
 import db.DBUtil.setSchema
 import db.entity.entities.*
 import entity.entities.*
-import entity.logic.ResultCommunication
+import entity.results.ResultCommunication
 import io.qameta.allure.Step
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.deleteAll
@@ -187,5 +187,13 @@ object EntitiesQuery {
         return id
     }
 
+    @Step("Сохраняем опрос")
+    fun saveCommunication(user: Users, json: JsonCommunicationData){
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_save_f('${user.id.value}','$json');")
+        }
+
+    }
 
 }

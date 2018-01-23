@@ -1,4 +1,3 @@
-import entity.logic.ResultCommunication
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -12,6 +12,7 @@
             <class name="dbtests.entities.communications.CommunicationCreateTests" />
             <class name="dbtests.entities.communications.CommunicationStartTests" />
             <class name="dbtests.entities.communications.CommunicationStopTests" />
+            <class name="dbtests.entities.communications.CommunicationSaveTests" />
         </classes>
     </test>
 </suite>

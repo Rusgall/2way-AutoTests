@@ -1,12 +1,6 @@
-package entity.logic
+package entity.results
 
 import entity.entities.result_code_type
-
-//class ResultCommunication(value : String){
-//    val result = value.get(1) == 't'
-//    val result_code = result_code_type.valueOf(value.substring(3, value.length-1))
-//
-//}
 
 class ResultCommunication {
 
