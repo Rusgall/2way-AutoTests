@@ -22,7 +22,7 @@ class CommunicationStartTests : CommunicationSteps() {
     @Story("web_communication_start_f")
     @Test(description = "Успешный запуск",
             dataProviderClass = EntitiesProvider::class, dataProvider = "goodTalks")
-    fun succsessStartCommunication(trace: Array<Int>, receiveSn: String, ibs: init_base_type_type,
+    fun successStartCommunication(trace: Array<Int>, receiveSn: String, ibs: init_base_type_type,
                                    mt: msg_type_type, talkStatus: talk_status, hasAnswer: Boolean) {
         //Создаем опрос
         EntitiesQuery.createCommunication(adminUser,
@@ -34,7 +34,7 @@ class CommunicationStartTests : CommunicationSteps() {
         val result = EntitiesQuery.startCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Проверяем статус опроса
         communication = EntitiesQuery.getCommunication(NameCommunication)
@@ -52,7 +52,7 @@ class CommunicationStartTests : CommunicationSteps() {
     @Story("web_communication_start_f")
     @Test(description = "Успешный запуск: несколько списков абонентов",
             dataProviderClass = EntitiesProvider::class, dataProvider = "goodTalks")
-    fun succsessStartCommunicationSeveralAbonentsLists(trace: Array<Int>, receiveSn: String, ibs: init_base_type_type,
+    fun successStartCommunicationSeveralAbonentsLists(trace: Array<Int>, receiveSn: String, ibs: init_base_type_type,
                                                        mt: msg_type_type, talkStatus: talk_status, hasAnswer: Boolean) {
         //Создадим 3 списка абонентов, часть номеров будет пересекаться
         val msisdns_1: List<Long> = arrayListOf(1000001, 1000002, 1000003)
@@ -75,7 +75,7 @@ class CommunicationStartTests : CommunicationSteps() {
         val result = EntitiesQuery.startCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Проверяем статус опроса
         communication = EntitiesQuery.getCommunication(NameCommunication)
@@ -110,7 +110,7 @@ class CommunicationStartTests : CommunicationSteps() {
         //Запускаем опрос
         val result = EntitiesQuery.startCommunication(adminUser, communication)
         //Проверяем результат запуска
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Ищем разговоры
         val talks = LogicQuery.getTalks(communication)
@@ -136,7 +136,7 @@ class CommunicationStartTests : CommunicationSteps() {
         //Запускаем опрос
         val result = EntitiesQuery.startCommunication(adminUser, communication)
         //Проверяем результат запуска
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Ищем разговоры
         val talks = LogicQuery.getTalks(communication)
@@ -163,7 +163,7 @@ class CommunicationStartTests : CommunicationSteps() {
         val result = EntitiesQuery.startCommunication(user, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(false, result_code_type.AUTH_ERROR))
+        checkResultCommunication(result, ResultCommunication(false, result_code_type.AUTH_ERROR))
 
         //Проверяем отсутсвие разговоров
         val actuaclCount = LogicQuery.getTalks(communication).size
@@ -188,7 +188,7 @@ class CommunicationStartTests : CommunicationSteps() {
         val result = EntitiesQuery.startCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_START_NO_DRAFT_COMMUNICATION))
+        checkResultCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_START_NO_DRAFT_COMMUNICATION))
 
         //Проверяем отсутсвие разговоров
         val actuaclCount = LogicQuery.getTalks(communication).size
@@ -210,7 +210,7 @@ class CommunicationStartTests : CommunicationSteps() {
         val result = EntitiesQuery.startCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_START_COMMUNICATION_IN_THE_PAST))
+        checkResultCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_START_COMMUNICATION_IN_THE_PAST))
 
         //Проверяем отсутсвие разговоров
         val actuaclCount = LogicQuery.getTalks(communication).size

@@ -196,4 +196,21 @@ object EntitiesQuery {
 
     }
 
+    @Step("Запускаем тестирование опроса")
+    fun testCommunication(user: Users, communication: Communication, msisdn: Long, msisdn_params:JsonAbonents): ResultCommunication {
+        var result: Any? = null
+        transaction {
+            setSchema(entities)
+            TransactionManager.current().exec("SELECT entities.web_communication_test_f('${user.id.value}','${communication.id.value}', '$msisdn', '$msisdn_params');",
+                    { it.next(); result = it.getObject(1) })
+        }
+
+        if (result is PGobject) {
+            return ResultCommunication((result as PGobject).value)
+        } else {
+            return ResultCommunication()
+        }
+    }
+
+
 }

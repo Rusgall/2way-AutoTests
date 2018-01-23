@@ -27,6 +27,7 @@ abstract class CommunicationSteps : BaseSteps() {
     lateinit var abonent: Abonents
     val alName = "Base AL"
     val msisdnDefault = 89818235391
+    val testCommunicationName = "abonent_list_for_test_communication_"
 
 
     @BeforeMethod(description = "Генерим начальных абонентов")
@@ -100,7 +101,7 @@ abstract class CommunicationSteps : BaseSteps() {
     }
 
     @Step("Проверяем результат старта опроса")
-    fun checkResultSartCommunication(actualResult: ResultCommunication, expectResult: ResultCommunication) {
+    fun checkResultCommunication(actualResult: ResultCommunication, expectResult: ResultCommunication) {
         Assert.assertEquals(actualResult, expectResult, "Ошибка не совпадает")
     }
 

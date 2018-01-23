@@ -40,7 +40,7 @@ class CommunicationStopTests : CommunicationSteps(){
         val result = EntitiesQuery.stopCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Проверяем статус опроса
         communication = EntitiesQuery.getCommunication(NameCommunication)
@@ -77,7 +77,7 @@ class CommunicationStopTests : CommunicationSteps(){
         val result = EntitiesQuery.stopCommunication(adminUser, communication_1)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
+        checkResultCommunication(result, ResultCommunication(true, result_code_type.NO_ERROR))
 
         //Проверяем статус первого опроса
         communication_1 = EntitiesQuery.getCommunication(nameCommunication_1)
@@ -121,7 +121,7 @@ class CommunicationStopTests : CommunicationSteps(){
         val result = EntitiesQuery.stopCommunication(user, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(false, result_code_type.AUTH_ERROR))
+        checkResultCommunication(result, ResultCommunication(false, result_code_type.AUTH_ERROR))
 
         //Проверяем статус опроса
         communication = EntitiesQuery.getCommunication(NameCommunication)
@@ -153,7 +153,7 @@ class CommunicationStopTests : CommunicationSteps(){
         val result = EntitiesQuery.stopCommunication(adminUser, communication)
 
         //Проверяем результат функции
-        checkResultSartCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_STOP_NO_ACTIVE_COMMUNICATION))
+        checkResultCommunication(result, ResultCommunication(false, result_code_type.ATTEMPT_TO_STOP_NO_ACTIVE_COMMUNICATION))
 
         //Проверяем статус опроса
         communication = EntitiesQuery.getCommunication(NameCommunication)

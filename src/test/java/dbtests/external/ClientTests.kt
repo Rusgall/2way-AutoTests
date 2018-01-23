@@ -28,7 +28,7 @@ class ClientTests : ClientSteps() {
     }
 
     @Story("client_add")
-    @Test(description = "Успешно создаем клиента", enabled = false)
+    @Test(description = "Успешно создаем клиента")
     fun createClient(){
         //Создаем клиента
         val name = "Test Client Name"

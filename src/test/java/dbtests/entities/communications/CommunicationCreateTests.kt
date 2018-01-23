@@ -12,7 +12,7 @@ import java.util.*
 @Feature("ENTITIES")
 class CommunicationCreateTests : CommunicationSteps() {
     @Story("web_communication_add_f")
-    @Test(description = "Успешное создание опроса",
+    @Test(description = "Успешное создание опроса: разный источник абонентов",
             dataProviderClass = EntitiesProvider::class, dataProvider = "goodCommunications")
     fun createCommunication(jsonCommunication: JsonCommunication, status: communication_status_type,
                             name: String, jsonCommunicationTemplate: JsonCommunicationTemplate,
@@ -56,7 +56,7 @@ class CommunicationCreateTests : CommunicationSteps() {
     }
 
     @Story("web_communication_add_f")
-    @Test(description = "Успешное создание опроса: Несколько список абонентов")
+    @Test(description = "Успешное создание опроса: несколько списков абонентов")
     fun createCommunicationSeveralAbonentLists() {
 
         //Создадим 3 списка абонентов, часть номеров будет пересекаться
