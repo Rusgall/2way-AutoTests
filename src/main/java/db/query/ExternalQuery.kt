@@ -20,6 +20,7 @@ object ExternalQuery {
     fun clearDB() {
         transaction {
             setSchema(external)
+            EventsLogObject.deleteAll()
             UsersObject.deleteAll()
             ClientsObject.deleteAll()
             RoleObject.deleteAll()

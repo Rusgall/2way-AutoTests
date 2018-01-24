@@ -12,6 +12,7 @@ import db.entity.external.Clients
 import db.entity.external.ClientsObject
 import db.entity.external.RoleObject
 import db.entity.external.UsersObject
+import db.entity.external.EventsLogObject
 import db.query.EntitiesQuery
 import db.query.ExternalQuery
 import entity.external.JsonClient
@@ -46,6 +47,7 @@ object DBUtil {
     fun clearDB() {
         transaction {
             setSchema(public, external, entities, logic)
+            EventsLogObject.deleteAll()
             TalksObject.deleteAll()
             CommunicationAbonentsListsObject.deleteAll()
             CommunicationObject.deleteAll()
